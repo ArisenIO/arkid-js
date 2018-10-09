@@ -51,8 +51,8 @@ let appkey = StorageService.getAppKey();
 if(!appkey) appkey = 'appkey:'+random();
 
 const send = (type = null, data = null) => {
-    if(type === null && data === null) socket.send('40/scatter');
-    else socket.send('42/scatter,' + JSON.stringify([type, data]));
+    if(type === null && data === null) socket.send('40/arkid');
+    else socket.send('42/arkid,' + JSON.stringify([type, data]));
 }
 
 let pairingPromise = null;
@@ -89,11 +89,11 @@ export default class SocketService {
                 const setupSocket = () => {
                     socket.onmessage = msg => {
                         // Handshaking/Upgrading
-                        if(msg.data.indexOf('42/scatter') === -1) return false;
+                        if(msg.data.indexOf('42/arkid') === -1) return false;
 
 
                         // Real message
-                        const [type, data] = JSON.parse(msg.data.replace('42/scatter,', ''));
+                        const [type, data] = JSON.parse(msg.data.replace('42/arkid,', ''));
 
                         switch(type){
                             case 'paired': return msg_paired(data);
@@ -145,7 +145,7 @@ export default class SocketService {
                 const trySocket = (ssl = true, resolver = null) => {
                     let promise;
                     if(!resolver) promise = new Promise(r => resolver = r);
-                    const hostname = ssl ? 'local.get-scatter.com:50006' : '127.0.0.1:50005';
+                    const hostname = ssl ? 'connect.arkid.io:12518' : '127.0.0.1:12618';
                     const protocol = ssl ? 'wss://' : 'ws://';
                     const host = `${protocol}${hostname}${suffix}`;
                     const s = new WebSocket(host);
@@ -198,7 +198,7 @@ export default class SocketService {
             if(request.type === 'identityFromPermissions' && !paired) return resolve(false);
 
             pair().then(() => {
-                if(!paired) return reject({code:'not_paired', message:'The user did not allow this app to connect to their Scatter'});
+                if(!paired) return reject({code:'not_paired', message:'The user did not allow this app to connect to their ArkId'});
 
                 // Request ID used for resolving promises
                 request.id = random();

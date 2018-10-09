@@ -8,13 +8,13 @@ import Network from './models/Network';
 let origin;
 
 const throwNoAuth = () => {
-    if(!holder.scatter.isExtension && !SocketService.isConnected())
-        throw new Error('Connect and Authenticate first - scatter.connect( pluginName )');
+    if(!holder.arkid.isExtension && !SocketService.isConnected())
+        throw new Error('Connect and Authenticate first - arkid.connect( pluginName )');
 };
 
 const checkForExtension = (resolve, tries = 0) => {
     if(tries > 20) return;
-    if(holder.scatter.isExtension) return resolve(true);
+    if(holder.arkid.isExtension) return resolve(true);
     setTimeout(() => checkForExtension(resolve, tries + 1), 100);
 };
 
@@ -27,7 +27,7 @@ class Index {
 
 	loadPlugin(plugin){
 		const noIdFunc = () => { if(!this.identity) throw new Error('No Identity') };
-    	if(!plugin.isValid()) throw new Error(`${plugin.name} doesn't seem to be a valid ScatterJS plugin.`);
+    	if(!plugin.isValid()) throw new Error(`${plugin.name} doesn't seem to be a valid ArkIdJS plugin.`);
 
 		PluginRepository.loadPlugin(plugin);
 
@@ -64,7 +64,7 @@ class Index {
                 resolve(false);
             }, options.initTimeout);
 
-            // Defaults to scatter extension if exists
+            // Defaults to arkid extension if exists
             checkForExtension(resolve);
 
             // Tries to set up Desktop Connection
@@ -220,13 +220,13 @@ class Index {
 
 
 class Holder {
-    constructor(_scatter){
-        this.scatter = _scatter;
+    constructor(_arkid){
+        this.arkid = _arkid;
     }
 
 	plugins(...plugins) {
-		if (!this.scatter.isExtension) {
-			plugins.map(plugin => this.scatter.loadPlugin(plugin));
+		if (!this.arkid.isExtension) {
+			plugins.map(plugin => this.arkid.loadPlugin(plugin));
 		}
 	}
 }
@@ -237,17 +237,17 @@ if(typeof window !== 'undefined') {
 
     // Catching extension instead of Desktop
     if(typeof document !== 'undefined'){
-        const bindScatterClassic = () => {
-            holder.scatter = window.scatter;
-            holder.scatter.isExtension = true;
-            holder.scatter.connect = () => new Promise(resolve => resolve(true));
+        const bindArkIdClassic = () => {
+            holder.arkid = window.arkid;
+            holder.arkid.isExtension = true;
+            holder.arkid.connect = () => new Promise(resolve => resolve(true));
         };
 
-        if(typeof window.scatter !== 'undefined') bindScatterClassic();
-        else document.addEventListener('scatterLoaded', () => bindScatterClassic());
+        if(typeof window.arkid !== 'undefined') bindArkIdClassic();
+        else document.addEventListener('arkidLoaded', () => bindArkIdClassic());
     }
 
-    window.ScatterJS = holder;
+    window.ArkIdJS = holder;
 }
 
 holder.Plugin = Plugin;
@@ -257,5 +257,3 @@ holder.Network = Network;
 holder.SocketService = SocketService;
 export {Plugin, PluginTypes, Blockchains, Network, SocketService};
 export default holder;
-
-

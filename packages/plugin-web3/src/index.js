@@ -4,7 +4,7 @@ import {
 	Blockchains,
 	Network,
 	SocketService
-} from 'scatterjs-core';
+} from 'arkid-js-core';
 
 import ProviderEngine from 'web3-provider-engine';
 import RpcSubprovider from 'web3-provider-engine/subproviders/rpc';
@@ -20,7 +20,7 @@ let ethNetwork;
 
 
 
-class ScatterEthereumWallet {
+class ArkIdEthereumWallet {
     constructor(){
         this.getAccounts = this.getAccounts.bind(this);
         this.signTransaction = this.signTransaction.bind(this);
@@ -68,7 +68,7 @@ class ScatterEthereumWallet {
     }
 }
 
-export default class ScatterETH extends Plugin {
+export default class ArkIdETH extends Plugin {
 
     constructor(){
         super(Blockchains.ETH, PluginTypes.BLOCKCHAIN_SUPPORT)
@@ -89,7 +89,7 @@ export default class ScatterETH extends Plugin {
             const engine = new ProviderEngine();
             const web3 = new _web3(engine);
 
-            const walletSubprovider = new HookedWalletSubprovider(new ScatterEthereumWallet());
+            const walletSubprovider = new HookedWalletSubprovider(new ArkIdEthereumWallet());
             engine.addProvider(walletSubprovider);
 
             if(ethNetwork.protocol.indexOf('http') > -1) engine.addProvider(new RpcSubprovider({rpcUrl}));
@@ -103,5 +103,5 @@ export default class ScatterETH extends Plugin {
 }
 
 if(typeof window !== 'undefined') {
-    window.ScatterETH = ScatterETH;
+    window.ArkIdETH = ArkIdETH;
 }

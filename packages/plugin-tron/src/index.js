@@ -4,13 +4,13 @@ import {
 	Blockchains,
 	Network,
 	SocketService
-} from 'scatterjs-core';
+} from 'arkid-js-core';
 
 
 
 const proxy = (dummy, handler) => new Proxy(dummy, handler);
 
-export default class ScatterTron extends Plugin {
+export default class ArkIdTron extends Plugin {
 
     constructor(){
         super(Blockchains.TRX, PluginTypes.BLOCKCHAIN_SUPPORT)
@@ -52,5 +52,5 @@ export default class ScatterTron extends Plugin {
 }
 
 if(typeof window !== 'undefined') {
-    window.ScatterTron = ScatterTron;
+    window.ArkIdTron = ArkIdTron;
 }

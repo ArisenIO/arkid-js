@@ -1,1 +1,1 @@
-# ScatterJS Core
+# ArkIdJS Core

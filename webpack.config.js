@@ -7,8 +7,8 @@ const getPackagePath = x => `./packages/${x}/src/index.js`;
 
 const packageFiles = [
 	'core',
-	'plugin-eosjs',
-	'plugin-eosjs2',
+	'plugin-arisenjs',
+	'plugin-arisenjs2',
 	'plugin-web3',
 	'plugin-tron',
 ];
@@ -20,7 +20,7 @@ module.exports = {
 	entry,
 	output: {
 		path: path.resolve(__dirname, './bundles'),
-		filename: 'scatterjs-[name]'
+		filename: 'arkid-js-[name]'
 	},
 	resolve: {
 		modules:[
@@ -53,6 +53,6 @@ module.exports = {
 	devtool: false,
 	// devtool: 'inline-source-map',
 	externals: {
-		'scatterjs-core': 'ScatterJS'
+		'arkid-js-core': 'ArkIdJS'
 	}
 }

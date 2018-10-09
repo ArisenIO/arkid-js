@@ -5,8 +5,8 @@
     <title>Web Tester</title>
 
     <script src="https://rawgit.com/tronprotocol/tron-web/master/dist/TronWeb.js"></script>
-    <script src="../../bundles/scatterjs-core.min.js"></script>
-    <script src="../../bundles/scatterjs-plugin-tron.min.js"></script>
+    <script src="../../bundles/arkid-js-core.min.js"></script>
+    <script src="../../bundles/arkid-js-plugin-tron.min.js"></script>
 </head>
 <body>
 
@@ -17,7 +17,7 @@
 <script>
 
 
-    let tron, scatter;
+    let tron, arkid;
     const network = {
         blockchain:'trx',
         chainId:'1',
@@ -33,26 +33,26 @@
     const tronWeb = new TronWeb(fullNode, fullNode, eventServer);
     tronWeb.setDefaultBlock('latest');
 
-    ScatterJS.plugins( new ScatterTron() );
+    ArkIdJS.plugins( new ArkIdTron() );
 
-    ScatterJS.scatter.connect('ScatterTronTest').then(connected => {
+    ArkIdJS.arkid.connect('ArkIdTronTest').then(connected => {
         if(!connected) return false;
-        scatter = ScatterJS.scatter;
-        tron = scatter.trx(network, tronWeb);
-        if(scatter.identity){
-            tron.setAddress(scatter.identity.accounts[0].address);
+        arkid = ArkIdJS.arkid;
+        tron = arkid.trx(network, tronWeb);
+        if(arkid.identity){
+            tron.setAddress(arkid.identity.accounts[0].address);
         }
     });
 
     window.login = async () => {
-        await scatter.suggestNetwork(network);
-        await scatter.getIdentity({accounts:[network]});
-        console.log('account', scatter.identity.accounts);
-        tron.setAddress(scatter.identity.accounts[0].address);
+        await arkid.suggestNetwork(network);
+        await arkid.getIdentity({accounts:[network]});
+        console.log('account', arkid.identity.accounts);
+        tron.setAddress(arkid.identity.accounts[0].address);
     };
 
     window.logout = () => {
-        scatter.forgetIdentity();
+        arkid.forgetIdentity();
     };
 
     window.transfer = async () => {
@@ -62,10 +62,10 @@
     };
 
     window.hookTransfer = () => {
-        const eos = Eos({httpEndpoint:`${network.protocol}://${network.host}:${network.port}`, signProvider:scatter.eosHook(network)});
-        const account = scatter.identity.accounts.find(x => x.blockchain === 'eos');
+        const rsn = Rsn({httpEndpoint:`${network.protocol}://${network.host}:${network.port}`, signProvider:arkid.rsnHook(network)});
+        const account = arkid.identity.accounts.find(x => x.blockchain === 'rsn');
         const opts = { authorization:[`${account.name}@${account.authority}`] };
-        eos.transfer(account.name, 'eosio', '1.0000 EOS', '', opts).then(trx => {
+        rsn.transfer(account.name, 'arisen', '1.0000 RSN', '', opts).then(trx => {
             console.log('trx', trx);
         }).catch(err => {
             console.error(err);

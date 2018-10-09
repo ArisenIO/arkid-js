@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Tester</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/arisenjs@16.0.0/lib/rsn.min.js"></script>
+    <script src="../../bundles/arkid-js-core.min.js"></script>
+    <script src="../../bundles/arkid-js-plugin-arisenjs.min.js"></script>
+</head>
+<body>
+
+<button onclick="login()">Get Identity</button>
+<button onclick="logout()">Forget Identity</button>
+<button onclick="transfer()">Transfer</button>
+<button onclick="hookTransfer()">Hook Transfer</button>
+
+<script>
+
+    console.log(ArkIdJS);
+
+	 ArkIdJS.plugins( new ArkIdRSN() );
+
+//    const network = {
+//        blockchain:'rsn',
+//        chainId:'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
+//        host:'192.168.1.6',
+//        port:8888,
+//        protocol:'http'
+//    };
+
+    const network = {
+        blockchain:'rsn',
+        chainId:'fffa80dc4492fedaa90cbc4ee6f5520568826dfb31ed9c8c161224349f6b82f5',
+        host:'greatchain.arisennodes.io',
+        port:443,
+        protocol:'https'
+    };
+
+    let arkid = null;
+
+    ArkIdJS.arkid.connect('LernaVanillaTest').then(connected => {
+        if(!connected) return false;
+        arkid = ArkIdJS.arkid;
+        console.log('sc', arkid);
+    });
+
+    window.login = async () => {
+        await arkid.suggestNetwork(network);
+        await arkid.getIdentity({accounts:[network]})
+    };
+
+    window.logout = () => {
+        arkid.forgetIdentity();
+    };
+
+    window.transfer = async () => {
+        const rsn = arkid.rsn(network, Rsn);
+//        const test = await rsn.getKeyAccounts('RSN7PNWhQDMx1SSPp2T7ZGRaVAGbhs6UJk8DniUzfNJGv5rjgCcvZ');
+//        console.log('test', test);
+//        console.log('rsn', rsn);
+        const account = arkid.identity.accounts.find(x => x.blockchain === 'rsn');
+        const opts = { authorization:[`${account.name}@${account.authority}`], requiredFields:{personal:['email'], location:['address']} };
+        rsn.transfer(account.name, 'arisen', '1.0000 RSN', '', opts).then(trx => {
+            console.log('trx', trx);
+        }).catch(err => {
+            console.error(err);
+        })
+    };
+
+    window.hookTransfer = () => {
+        const rsn = Rsn({httpEndpoint:`${network.protocol}://${network.host}:${network.port}`, signProvider:arkid.rsnHook(network)});
+        const account = arkid.identity.accounts.find(x => x.blockchain === 'rsn');
+        const opts = { authorization:[`${account.name}@${account.authority}`] };
+        rsn.transfer(account.name, 'arisen', '1.0000 RSN', '', opts).then(trx => {
+            console.log('trx', trx);
+        }).catch(err => {
+            console.error(err);
+        })
+    };
+
+</script>
+</body>
+</html>
